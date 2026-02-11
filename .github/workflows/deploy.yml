@@ -1,0 +1,53 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main  # Executa sempre que houver push na branch principal
+
+jobs:
+  terraform:
+    name: 'Terraform & Deploy'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Zip Lambda Function
+      run: |
+        cd src
+        zip -r ../lambda_function.zip lambda_function.py
+        cd ..
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      env:
+        # Passando as variáveis para o Terraform via variáveis de ambiente do shell
+        TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
+        TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
+
+    - name: Upload index.html to S3
+      run: |
+        # Obtém o nome do bucket a partir do output do Terraform
+        BUCKET_NAME=$(terraform output -raw s3_bucket_name)
+        aws s3 cp src/index.html s3://$BUCKET_NAME/index.html
+
+    - name: Update API URL in HTML
+      run: |
+        API_URL=$(terraform output -raw api_gateway_url)
+        sed -i "s|https://SUA-API-ID.execute-api.region.amazonaws.com/get-url|$API_URL|g" src/index.html
