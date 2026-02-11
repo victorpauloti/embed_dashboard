@@ -32,9 +32,11 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
+      working-directory: ./terraform # Altere para o nome da sua pasta
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
+      working-directory: ./terraform # Altere para o nome da sua pasta
       env:
         # Passando as variáveis para o Terraform via variáveis de ambiente do shell
         TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
