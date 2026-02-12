@@ -63,16 +63,17 @@ jobs:
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
 
     # Sincronização do Frontend: Só ocorre se o Apply manual for bem-sucedido
+    - name: Update API URL in HTML
+      if: ${{ github.event.inputs.action == 'apply' }}
+      run: |
+        API_URL=$(terraform output -raw api_gateway_url)
+        sed -i "s|https://SUA-API-ID.execute-api.region.amazonaws.com/get-url|$API_URL|g" ../src/index.html
+
     - name: Upload index.html to S3
       if: ${{ github.event.inputs.action == 'apply' }}
       run: |
         BUCKET_NAME=$(terraform output -raw s3_bucket_name)
         aws s3 cp ../src/index.html s3://$BUCKET_NAME/index.html
-
-    - name: Update API URL in HTML
-      run: |
-        API_URL=$(terraform output -raw api_gateway_url)
-        sed -i "s|https://SUA-API-ID.execute-api.region.amazonaws.com/get-url|$API_URL|g" src/index.html
 
     # Destroy: EXCLUSIVAMENTE MANUAL via interface do GitHub
     - name: Terraform Destroy
