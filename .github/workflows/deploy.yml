@@ -5,6 +5,13 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch: # Permite execução manual
+    inputs:
+      destroy_infra:
+        description: 'Deseja destruir toda a infraestrutura? (true/false)'
+        required: true
+        default: 'false'
+        type: boolean
 
 jobs:
   terraform:
@@ -43,9 +50,18 @@ jobs:
         TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
 
+  # Passo de Destruição (Só roda se acionado manualmente com true)
+    - name: Terraform Destroy
+      if: ${{ github.event.inputs.destroy_infra == 'true' }}
+      run: terraform destroy -auto-approve
+      env:
+        TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
+        TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
+
     # O Apply só roda se for um PUSH na branch MAIN (após o merge do PR)
     - name: Terraform Apply
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.inputs.destroy_infra != 'true' }}
       run: terraform apply -auto-approve
       env:
         TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}

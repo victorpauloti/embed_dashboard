@@ -1,6 +1,7 @@
 # Bucket S3
 resource "aws_s3_bucket" "frontend_bucket" {
   bucket = "meu-dashboard-quicksight-front"
+  force_destroy = true
 }
 
 # Bucket Policy para o OAC

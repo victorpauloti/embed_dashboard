@@ -1,5 +1,4 @@
 
-
 # CloudFront OAC
 resource "aws_cloudfront_origin_access_control" "oac" {
   name                              = "s3-quicksight-oac"
