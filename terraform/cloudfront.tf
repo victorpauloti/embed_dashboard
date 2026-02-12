@@ -15,6 +15,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     origin_id                = "S3Origin"
   }
 
+  #price_class = "Free plan"
   enabled             = true
   default_root_object = "index.html"
 
