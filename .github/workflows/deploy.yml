@@ -1,24 +1,27 @@
-name: CI/CD Terraform QuickSight
+name: CI/CD Terraform QuickSight - Controle Manual
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch: # Permite execução manual
+  workflow_dispatch:
     inputs:
-      destroy_infra:
-        description: 'Deseja destruir toda a infraestrutura? (true/false)'
+      action:
+        description: 'Escolha a ação desejada (Plan sempre será executado)'
         required: true
-        default: 'false'
-        type: boolean
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
 
 jobs:
   terraform:
     name: 'Terraform Workflow'
     runs-on: ubuntu-latest
     
-    # Define o diretório padrão para evitar repetições
     defaults:
       run:
         working-directory: ./terraform
@@ -42,7 +45,7 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    # O Plan roda tanto em PR quanto em Push na Main para garantir validação
+    # O Plan roda em todos os casos (Push, PR e Manual)
     - name: Terraform Plan
       run: terraform plan
       env:
@@ -50,27 +53,27 @@ jobs:
         TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
 
-  # Passo de Destruição (Só roda se acionado manualmente com true)
-    - name: Terraform Destroy
-      if: ${{ github.event.inputs.destroy_infra == 'true' }}
-      run: terraform destroy -auto-approve
-      env:
-        TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
-        TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
-
-    # O Apply só roda se for um PUSH na branch MAIN (após o merge do PR)
+    # Apply: EXCLUSIVAMENTE MANUAL via interface do GitHub
     - name: Terraform Apply
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.inputs.destroy_infra != 'true' }}
+      if: ${{ github.event.inputs.action == 'apply' }}
       run: terraform apply -auto-approve
       env:
         TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
         TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
 
-    # Sincronização do Frontend só após o Apply na Main
+    # Sincronização do Frontend: Só ocorre se o Apply manual for bem-sucedido
     - name: Upload index.html to S3
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: ${{ github.event.inputs.action == 'apply' }}
       run: |
         BUCKET_NAME=$(terraform output -raw s3_bucket_name)
         aws s3 cp ../src/index.html s3://$BUCKET_NAME/index.html
+
+    # Destroy: EXCLUSIVAMENTE MANUAL via interface do GitHub
+    - name: Terraform Destroy
+      if: ${{ github.event.inputs.action == 'destroy' }}
+      run: terraform destroy -auto-approve
+      env:
+        TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
+        TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}

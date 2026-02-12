@@ -20,6 +20,7 @@ resource "aws_lambda_function" "quicksight_lambda" {
       DASHBOARD_ID = var.dashboard_id
       ACCOUNT_ID   = var.account_id
       USER_ARN     = var.quicksight_user_arn
+      REGION       = "us-east-1"
     }
   }
 }
