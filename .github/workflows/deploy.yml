@@ -69,6 +69,11 @@ jobs:
         BUCKET_NAME=$(terraform output -raw s3_bucket_name)
         aws s3 cp ../src/index.html s3://$BUCKET_NAME/index.html
 
+    - name: Update API URL in HTML
+      run: |
+        API_URL=$(terraform output -raw api_gateway_url)
+        sed -i "s|https://SUA-API-ID.execute-api.region.amazonaws.com/get-url|$API_URL|g" src/index.html
+
     # Destroy: EXCLUSIVAMENTE MANUAL via interface do GitHub
     - name: Terraform Destroy
       if: ${{ github.event.inputs.action == 'destroy' }}
