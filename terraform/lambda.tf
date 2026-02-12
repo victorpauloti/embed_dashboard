@@ -13,7 +13,7 @@ resource "aws_lambda_function" "quicksight_lambda" {
   function_name    = "get_quicksight_url"
   role             = aws_iam_role.lambda_role.arn
   handler          = "lambda_function.lambda_handler"
-  runtime          = "python3.14"
+  runtime          = "python3.9"
 
   environment {
     variables = {
