@@ -23,7 +23,7 @@ resource "aws_iam_role_policy" "quicksight_policy" {
         Effect   = "Allow"
         Resource = [
           "arn:aws:quicksight:${var.aws_region}:${var.account_id}:dashboard/${var.dashboard_id}",
-          "arn:aws:quicksight:${var.aws_region}:${var.account_id}:user/${var.quicksight_user_arn}"
+          "arn:aws:quicksight:${var.aws_region}:${var.account_id}:user/default/${var.quicksight_user_arn}"
         ]
       },
       {
