@@ -1,55 +1,58 @@
-name: Deploy Infrastructure
+name: CI/CD Terraform QuickSight
 
 on:
   push:
-    branches:
-      - main  # Executa sempre que houver push na branch principal
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   terraform:
-    name: 'Terraform & Deploy'
+    name: 'Terraform Workflow'
     runs-on: ubuntu-latest
+    
+    # Define o diretório padrão para evitar repetições
+    defaults:
+      run:
+        working-directory: ./terraform
 
     steps:
-    - name: Checkout
+    - name: Checkout Código
       uses: actions/checkout@v3
 
-    - name: Setup AWS Credentials
+    - name: Configurar Credenciais AWS
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
-    - name: Setup Terraform
+    - name: Instalar Terraform
       uses: hashicorp/setup-terraform@v2
-
-    - name: Zip Lambda Function
-      run: |
-        cd src
-        zip -r ../lambda_function.zip lambda_function.py
-        cd ..
 
     - name: Terraform Init
       run: terraform init
-      working-directory: ./terraform # Altere para o nome da sua pasta
 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-      working-directory: ./terraform # Altere para o nome da sua pasta
+    # O Plan roda tanto em PR quanto em Push na Main para garantir validação
+    - name: Terraform Plan
+      run: terraform plan
       env:
-        # Passando as variáveis para o Terraform via variáveis de ambiente do shell
         TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
         TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
 
-    - name: Upload index.html to S3
-      run: |
-        # Obtém o nome do bucket a partir do output do Terraform
-        BUCKET_NAME=$(terraform output -raw s3_bucket_name)
-        aws s3 cp src/index.html s3://$BUCKET_NAME/index.html
+    # O Apply só roda se for um PUSH na branch MAIN (após o merge do PR)
+    - name: Terraform Apply
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve
+      env:
+        TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
+        TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
 
-    - name: Update API URL in HTML
+    # Sincronização do Frontend só após o Apply na Main
+    - name: Upload index.html to S3
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        API_URL=$(terraform output -raw api_gateway_url)
-        sed -i "s|https://SUA-API-ID.execute-api.region.amazonaws.com/get-url|$API_URL|g" src/index.html
+        BUCKET_NAME=$(terraform output -raw s3_bucket_name)
+        aws s3 cp ../src/index.html s3://$BUCKET_NAME/index.html
