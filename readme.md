@@ -70,19 +70,3 @@ Least Privilege: A Role da Lambda possui permissão restrita apenas para o Dashb
 O dashboard está configurado no index.html para carregar com o locale pt-BR, garantindo que os controles e filtros estejam em português brasileiro.
 
 Desenvolvido como um modelo de arquitetura serveless para BI.
-
-
----
-
-### Dica para o seu arquivo `lambda_function.py`:
-No Terraform, eu configurei variáveis de ambiente. Garanta que seu código Python no repositório as utilize assim:
-
-```python
-import os
-import boto3
-
-def lambda_handler(event, context):
-    dashboard_id = os.environ['DASHBOARD_ID']
-    account_id = os.environ['ACCOUNT_ID']
-    user_arn = os.environ['USER_ARN']
-    # ... resto do código
