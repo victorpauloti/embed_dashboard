@@ -16,10 +16,10 @@ A solução utiliza os seguintes componentes:
 
 ## 🚀 Pré-requisitos
 
-1.  **Terraform** instalado (v1.0+).
-2.  **QuickSight Enterprise Edition** (necessário para recursos de embedding).
+1.  **QuickSight Enterprise Edition** (necessário para recursos de embedding).
 3.  Um **Dashboard** já publicado no QuickSight.
 4.  O **ARN do Usuário** do QuickSight que terá permissão de visualização.
+5. Apos deploy da infra adicionar o **Distribution domain name** ou seu dominio em *Manage domains* no Gerenciamento do QuickSight
 
 ## 📁 Estrutura do Projeto
 
@@ -29,7 +29,8 @@ A solução utiliza os seguintes componentes:
 │   ├── main.tf          # Recursos principais (S3, CloudFront, API GW)
 │   ├── lambda.tf        # Definição da função Lambda e IAM Roles
 │   ├── variables.tf     # Definição das variáveis de entrada
-│   └── outputs.tf       # Links e IDs gerados após o deploy
+│   ├── outputs.tf       # Links e IDs gerados após o deploy
+|   └── demais_recursos.tf # Separei demais recurso em outros arquivos .tf
 ├── src/
 │   ├── index.html       # Front-end da aplicação
 │   └── lambda_function.py # Código Python da Lambda
