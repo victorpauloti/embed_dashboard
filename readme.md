@@ -36,7 +36,29 @@ A solução utiliza os seguintes componentes:
 └── deploy.sh            # Script utilitário para automação
 
 
+🛠️ Como Implantar
+1. Preparar a Lambda
+Zipe o arquivo da função antes de iniciar:
 
+Bash
+zip src/lambda_function.zip src/lambda_function.py
+2. Configurar Variáveis
+Crie um arquivo terraform.tfvars na pasta terraform/ com seus dados:
+
+Terraform
+account_id          = "123456789012"
+quicksight_user_arn = "arn:aws:quicksight:us-east-1:123456789012:user/default/seu-usuario"
+dashboard_id        = "seu-uuid-do-dashboard"
+
+3. Aplicar o Terraform
+Bash
+terraform init
+terraform apply
+4. Upload do Front-end
+Após o apply, o Terraform exibirá a URL da API e o nome do bucket. Atualize a URL da API no arquivo index.html e suba-o para o S3:
+
+Bash
+aws s3 cp src/index.html s3://$(terraform output -raw s3_bucket_name)/
 🔒 Segurança
 Bucket Privado: O S3 não possui acesso público. Todo acesso é via CloudFront OAC.
 
@@ -45,6 +67,6 @@ CORS: O API Gateway está configurado para aceitar requisições apenas da orige
 Least Privilege: A Role da Lambda possui permissão restrita apenas para o Dashboard e Usuário informados.
 
 📝 Notas de Localidade
-O dashboard está configurado no index.html para carregar com o locale pt-BR, garantindo que os controles e filtros estejam em português br.
+O dashboard está configurado no index.html para carregar com o locale pt-BR, garantindo que os controles e filtros estejam em português brasileiro.
 
 Desenvolvido como um modelo de arquitetura serveless para BI.
