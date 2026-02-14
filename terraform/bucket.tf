@@ -1,6 +1,11 @@
+# randon pet
+resource "random_pet" "bucket_name_generator" {
+  prefix = "my-dashboard-quicksight-front"
+  length = 2
+}
 # Bucket S3
 resource "aws_s3_bucket" "frontend_bucket" {
-  bucket = "meu-dashboard-quicksight-front"
+  bucket = random_pet.bucket_name_generator.id
   force_destroy = true
 }
 
