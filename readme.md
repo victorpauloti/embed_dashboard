@@ -11,14 +11,15 @@ A solução utiliza os seguintes componentes:
 * **Backend (Auth):** **API Gateway (HTTP API)** integrado a uma função **Lambda**.
 * **Integração:** A Lambda solicita uma URL de embedding ao **QuickSight** utilizando permissões do IAM para um usuário registrado.
 * **Visualização:** O SDK do QuickSight renderiza o dashboard no cliente final.
+* **CI/CD:** Github Actions para implantar esteira de deploy na AWS
+* **Terraform State:** Utilização de bucket S3 para o tfstate do terraform
 
 ## 🚀 Pré-requisitos
 
-1.  **AWS CLI** configurado com as devidas permissões.
-2.  **Terraform** instalado (v1.0+).
-3.  **QuickSight Enterprise Edition** (necessário para recursos de embedding).
-4.  Um **Dashboard** já publicado no QuickSight.
-5.  O **ARN do Usuário** do QuickSight que terá permissão de visualização.
+1.  **Terraform** instalado (v1.0+).
+2.  **QuickSight Enterprise Edition** (necessário para recursos de embedding).
+3.  Um **Dashboard** já publicado no QuickSight.
+4.  O **ARN do Usuário** do QuickSight que terá permissão de visualização.
 
 ## 📁 Estrutura do Projeto
 
@@ -32,7 +33,7 @@ A solução utiliza os seguintes componentes:
 ├── src/
 │   ├── index.html       # Front-end da aplicação
 │   └── lambda_function.py # Código Python da Lambda
-└── deploy.sh            # Script utilitário para automação
+└── .github/workflows/deploy.yml            # Script utilitário para automação
 
 
 🔒 Segurança
