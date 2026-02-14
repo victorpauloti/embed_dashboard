@@ -52,6 +52,7 @@ jobs:
         TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
         TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
+        TF_VAR_acm_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
 
     # Apply: EXCLUSIVAMENTE MANUAL via interface do GitHub
     - name: Terraform Apply
@@ -61,6 +62,7 @@ jobs:
         TF_VAR_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
         TF_VAR_quicksight_user_arn: ${{ secrets.QUICKSIGHT_USER_ARN }}
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
+        TF_VAR_acm_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
 
     # Sincronização do Frontend: Só ocorre se o Apply manual for bem-sucedido
     - name: Update API URL in HTML

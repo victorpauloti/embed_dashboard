@@ -16,7 +16,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   #price_class = "Free plan"
-  enabled             = true
+  enabled             = true # (Required) - Whether the distribution is enabled to accept end user requests for content.
   default_root_object = "index.html"
 
   default_cache_behavior {
@@ -32,12 +32,22 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
+  # restrictions {
+  #   geo_restriction {
+  #     restriction_type = "whitelist"
+  #     locations        = ["US", "CA", "GB", "DE"]
+  #   }
+  # }
+
   restrictions {
     geo_restriction { restriction_type = "none" }
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = var.acm_certificate_arn
+    minimum_protocol_version = "TLSv1.2_2021"
+    ssl_support_method  = "sni-only"
   }
+
 }
 

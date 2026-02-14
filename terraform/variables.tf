@@ -24,3 +24,9 @@ variable "dashboard_id" {
   description = "UUID do Dashboard do QuickSight"
   type        = string
 }
+
+variable "acm_certificate_arn" {
+  description = "ARN do certificado ACM para o domínio personalizado do CloudFront"
+  type        = string
+  
+}
