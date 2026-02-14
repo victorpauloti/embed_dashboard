@@ -32,15 +32,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  # restrictions {
-  #   geo_restriction {
-  #     restriction_type = "whitelist"
-  #     locations        = ["US", "CA", "GB", "DE"]
-  #   }
-  # }
-
   restrictions {
-    geo_restriction { restriction_type = "none" }
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["BR"]
+    }
   }
 
   viewer_certificate {
@@ -48,6 +44,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     minimum_protocol_version = "TLSv1.2_2021"
     ssl_support_method  = "sni-only"
   }
+
+   # 1. Add your custom domain(s) to the 'aliases' list
+  aliases = ["dash.vpaulo.com"]
 
 }
 

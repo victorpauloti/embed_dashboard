@@ -26,11 +26,11 @@ A solução utiliza os seguintes componentes:
 ```text
 .
 ├── terraform/
-│   ├── main.tf          # Recursos principais (S3, CloudFront, API GW)
-│   ├── lambda.tf        # Definição da função Lambda e IAM Roles
+│   ├── main.tf          # Bucket com backend para tfstate 
+│   ├── lambda.tf        # Definição da função Lambda
 │   ├── variables.tf     # Definição das variáveis de entrada
 │   ├── outputs.tf       # Links e IDs gerados após o deploy
-|   └── demais_recursos.tf # Separei demais recurso em outros arquivos .tf
+|   └── demais_recursos.tf # (S3, CloudFront, API GW) Separei demais recurso em outros arquivos .tf, confere a pasta terraform.
 ├── src/
 │   ├── index.html       # Front-end da aplicação
 │   └── lambda_function.py # Código Python da Lambda
@@ -44,9 +44,17 @@ CORS: O API Gateway está configurado para aceitar requisições apenas da orige
 
 Least Privilege: A Role da Lambda possui permissão restrita apenas para o Dashboard e Usuário informados.
 
-TF_VAR: definir variáveis de ambiente que o Terraform reconhece automaticamente como valores para suas variáveis de entrada (input variables). Isso permite passar credenciais ou configurações sensíveis, armazenadas nos segredos do GitHub, diretamente para o terraform plan ou apply.
+TF_VAR: definir variáveis de ambiente que o Terraform reconhece automaticamente como valores para suas variáveis de entrada (input variables). 
+Isso permite passar credenciais ou configurações sensíveis, armazenadas nos segredos do GitHub, diretamente para o terraform plan ou apply.
+
+Habilitado restrição Geografica no Cloudfront: Acesso somente BR
 
 📝 Notas de Localidade
 O dashboard está configurado no index.html para carregar com o locale pt-BR, garantindo que os controles e filtros estejam em português brasileiro.
 
 Desenvolvido como um modelo de arquitetura serveless para BI.
+```
+
+### Backlog
+Integrar Cognito com um usuario para autenticação e autorização para dash especifico
+
