@@ -32,10 +32,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
+  # search code country restriction --> https://www.iso.org/obp/ui/#home
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = ["BR"] # Permitir acesso apenas do Brasil
+      locations        = ["BR","DE"] # Permitir acesso apenas do Brasil
     }
   }
 
