@@ -58,3 +58,4 @@ Desenvolvido como um modelo de arquitetura serveless para BI.
 ### Backlog
 Integrar Cognito com um usuario para autenticação e autorização para dash especifico
 
+
