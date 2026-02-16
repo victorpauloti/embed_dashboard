@@ -39,8 +39,3 @@ resource "aws_cognito_user_pool_client" "client" {
     "ALLOW_CUSTOM_AUTH"
   ]
 }
-
-# Output para facilitar a configuração do HTML
-output "cognito_login_url" {
-  value = "https://${aws_cognito_user_pool_domain.main.domain}.auth.${var.aws_region}.amazoncognito.com/login?client_id=${aws_cognito_user_pool_client.client.id}&response_type=token&scope=email+openid+profile&redirect_uri=https://${aws_cloudfront_distribution.s3_distribution.domain_name}/index.html"
-}
