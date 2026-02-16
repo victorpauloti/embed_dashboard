@@ -30,8 +30,8 @@ resource "aws_cognito_user_pool_client" "client" {
   supported_identity_providers         = ["COGNITO"]
 
   # URLs de retorno (CloudFront)
-  callback_urls = ["https://${aws_cloudfront_distribution.s3_distribution.domain_name}/index.html"]
-  logout_urls   = ["https://${aws_cloudfront_distribution.s3_distribution.domain_name}/index.html"]
+  callback_urls = ["https://dash.vpaulo.com"]
+  logout_urls   = ["https://dash.vpaulo.com"]
 
   explicit_auth_flows = [
     "ALLOW_REFRESH_TOKEN_AUTH",
