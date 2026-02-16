@@ -15,7 +15,7 @@
 
     <script>
         // CONFIGURAÇÕES DO COGNITO (Pegue dos outputs do Terraform)
-        const LOGIN_URL = "SUA_COGNITO_LOGIN_URL_AQUI"; 
+        const LOGIN_URL = "https://vpaulo-dashboard-auth.auth.us-east-1.amazoncognito.com/login?client_id=6linms5mcuo1ha6pl3pe4tgjp0&response_type=token&scope=email+openid+profile&redirect_uri=https://d29go85x01tws8.cloudfront.net/index.html"; 
 
         function getTokensFromUrl() {
             const hash = window.location.hash.substring(1);
