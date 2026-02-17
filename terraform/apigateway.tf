@@ -3,8 +3,8 @@ resource "aws_apigatewayv2_api" "http_api" {
   protocol_type = "HTTP"
   cors_configuration {
     allow_origins = ["https://${aws_cloudfront_distribution.s3_distribution.domain_name}", "https://dash.vpaulo.com"]
-    allow_methods = ["GET"] # "OPTIONS"
-    allow_headers = ["content-type"]
+    allow_methods = ["GET"] # Apenas GET para a rota /get-url ,"OPTIONS"
+    allow_headers = ["content-type" , "authorization"] # Permitir o header Authorization para o token JWT
     max_age       = 300
   }
 }
@@ -34,7 +34,7 @@ resource "aws_apigatewayv2_route" "get_url_route" {
   route_key = "GET /get-url"
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 
-  # Adicione estas duas linhas abaixo:
+  # Adicione a autorização JWT do Cognito
   authorization_type = "JWT"
   authorizer_id      = aws_apigatewayv2_authorizer.cognito_auth.id
 }
