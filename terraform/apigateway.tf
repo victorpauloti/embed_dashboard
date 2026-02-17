@@ -3,7 +3,7 @@ resource "aws_apigatewayv2_api" "http_api" {
   protocol_type = "HTTP"
   cors_configuration {
     allow_origins = ["https://${aws_cloudfront_distribution.s3_distribution.domain_name}", "https://dash.vpaulo.com"]
-    allow_methods = ["GET", "OPTIONS"]
+    allow_methods = ["GET"] # "OPTIONS"
     allow_headers = ["content-type"]
     max_age       = 300
   }
