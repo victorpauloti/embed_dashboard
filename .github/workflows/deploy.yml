@@ -64,16 +64,16 @@ jobs:
         TF_VAR_dashboard_id: ${{ secrets.DASHBOARD_ID }}
         TF_VAR_acm_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
 
-    - name: Update API URL and Cognito Login in HTML
-      if: ${{ github.event.inputs.action == 'apply' }}
-      run: |
-        # Captura as URLs dos outputs do Terraform
-        LOGIN_URL=$(terraform output -raw cognito_login_url)
-        # API_URL=$(terraform output -raw api_gateway_url) # chamar apos apontar o domain custon no JS
+    # - name: Update API URL and Cognito Login in HTML
+    #   if: ${{ github.event.inputs.action == 'apply' }}
+    #   run: |
+    #     # Captura as URLs dos outputs do Terraform
+    #     LOGIN_URL=$(terraform output -raw cognito_login_url)
+    #     # API_URL=$(terraform output -raw api_gateway_url) # chamar apos apontar o domain custon no JS
 
-        # substitui as placeholders no index.html
-        sed -i "s#SUA_COGNITO_LOGIN_URL_AQUI#$LOGIN_URL#g" ../src/index.html
-        # sed -i "s#SUA_API_ID.execute-api.region.amazonaws.com/get-url#$API_URL#g" ../src/index.html
+    #     # substitui as placeholders no index.html
+    #     sed -i "s#SUA_COGNITO_LOGIN_URL_AQUI#$LOGIN_URL#g" ../src/index.html
+    #     # sed -i "s#SUA_API_ID.execute-api.region.amazonaws.com/get-url#$API_URL#g" ../src/index.html
 
     - name: Upload index.html to S3
       if: ${{ github.event.inputs.action == 'apply' }}

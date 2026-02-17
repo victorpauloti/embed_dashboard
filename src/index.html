@@ -14,8 +14,7 @@
     <div id="dashboardContainer"></div>
 
     <script>
-        // CONFIGURAÇÕES DO COGNITO (Pegue dos outputs do Terraform)
-        const LOGIN_URL = "SUA_COGNITO_LOGIN_URL_AQUI";
+        const LOGIN_URL = "https://vpaulo-dashboard-auth.auth.us-east-1.amazoncognito.com/login?client_id=6linms5mcuo1ha6pl3pe4tgjp0&response_type=token&scope=email+openid+profile&redirect_uri=https://dash.vpaulo.com/index.html";
 
         function getTokensFromUrl() {
             const hash = window.location.hash.substring(1);
@@ -27,38 +26,46 @@
             const idToken = getTokensFromUrl();
 
             if (!idToken) {
-                // Se não está logado, vai para a página da AWS
                 window.location.href = LOGIN_URL;
                 return;
             }
 
-            // Se chegou aqui, está logado!
             document.getElementById("loading").style.display = "none";
             document.getElementById("dashboardContainer").style.display = "block";
             
-            // Chama a função de embed (que já criamos antes)
             embedDashboard();
         }
 
         async function embedDashboard() {
             try {
-                const idToken = getTokensFromUrl(); // Função que já criamos
+                const idToken = getTokensFromUrl();
 
-                const response = await fetch('https://dash.vpaulo.com', {
+                // URL da sua API GATEWAY
+                const response = await fetch('https://l8zcau79cb.execute-api.us-east-1.amazonaws.com/get-url', {
                     method: 'GET',
                     headers: {
-                        'Authorization': idToken, // O token vai aqui
+                        'Authorization': idToken,
                         'Content-Type': 'application/json'
                     }
                 });
 
                 if (response.status === 401 || response.status === 403) {
                     console.error("Usuário não autorizado!");
-                    window.location.href = LOGIN_URL; // Redireciona se o token expirou
+                    window.location.href = LOGIN_URL;
                     return;
                 }
 
                 const data = await response.json();
+
+                // Definindo as opções de renderização
+                const containerDiv = document.getElementById("dashboardContainer");
+                const options = {
+                    url: data.embedUrl, // URL que vem da Lambda
+                    container: containerDiv,
+                    height: "100%",
+                    width: "100%",
+                    locale: "pt-BR"
+                };
 
                 const embeddingContext = await QuickSightEmbedding.createEmbeddingContext();
                 await embeddingContext.embedDashboard(options);
