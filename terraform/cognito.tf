@@ -8,6 +8,7 @@ resource "aws_cognito_user_pool" "pool" {
     require_numbers   = true
     require_symbols   = true
     require_uppercase = true
+    temporary_password_validity_days = 3
   }
 
   auto_verified_attributes = ["email"]
@@ -16,7 +17,6 @@ resource "aws_cognito_user_pool" "pool" {
 
   admin_create_user_config {
   allow_admin_create_user_only = true # Somente admins podem criar usuários (ex: via CLI ou Console)
-
   }
 
 }
