@@ -11,6 +11,14 @@ resource "aws_cognito_user_pool" "pool" {
   }
 
   auto_verified_attributes = ["email"]
+  # email_verification_message = "Seu código de verificação é {####}"
+  # email_verification_subject = "Verifique seu email para acessar o Dashboard"
+
+  admin_create_user_config {
+  allow_admin_create_user_only = true # Somente admins podem criar usuários (ex: via CLI ou Console)
+
+  }
+
 }
 
 # 2. Domínio da Hosted UI (Escolha um prefixo único)
@@ -39,3 +47,11 @@ resource "aws_cognito_user_pool_client" "client" {
     "ALLOW_CUSTOM_AUTH"
   ]
 }
+
+# resource "aws_cognito_user_group" "main" {
+#   name         = "user-group"
+#   user_pool_id = aws_cognito_user_pool.pool.id
+#   description  = "Managed by Terraform"
+#   precedence   = 42
+#   #role_arn     = aws_iam_role.group_role.arn
+# }
