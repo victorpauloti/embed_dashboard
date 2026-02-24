@@ -28,5 +28,6 @@ variable "dashboard_id" {
 variable "acm_certificate_arn" {
   description = "ARN do certificado ACM para o domínio personalizado do CloudFront"
   type        = string
+  default = "value"
   
 }
