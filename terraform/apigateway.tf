@@ -53,4 +53,15 @@ resource "aws_lambda_permission" "api_gw" {
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*/get-url"
 }
 
+resource "aws_api_gateway_domain_name" "example" {
+  domain_name              = "api.vpaulo.com"
+  regional_certificate_arn = "arn:aws:acm:us-east-1:555768437715:certificate/d6b3320a-84e0-4258-8055-38821f9a5605"
+  security_policy          = "SecurityPolicy_TLS13_1_3_2025_09"
+  endpoint_access_mode     = "STRICT"
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+
 
