@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Portal de Analytics</title>
+    <!-- SDK de embedding do QuickSight -->
     <script src="https://unpkg.com/amazon-quicksight-embedding-sdk@2.0.0/dist/quicksight-embedding-js-sdk.min.js"></script>
     <style>
         body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
@@ -43,8 +44,8 @@
 
     <script>
         // Substitua esta URL pelo output do Terraform para o Cognito Login
-        const LOGIN_URL = "https://vpaulo-dashboard-auth.auth.us-east-1.amazoncognito.com/login?client_id=6linms5mcuo1ha6pl3pe4tgjp0&response_type=token&scope=email+openid+profile&redirect_uri=https://dash.vpaulo.com/index.html";
-        const API_URL = "https://l8zcau79cb.execute-api.us-east-1.amazonaws.com/get-url";
+        const LOGIN_URL = "https://name.auth.us-east-1.amazoncognito.com/login?client_id=xxxx&response_type=token&scope=email+openid+profile&redirect_uri=https://url_callback/index.html";
+        const API_URL = "https://SUA-API-ID.execute-api.region.amazonaws.com/get-url";
 
         function getTokensFromUrl() {
             const hash = window.location.hash.substring(1);
@@ -54,15 +55,15 @@
 
                 // criar no deploy
         // const CLIENT_ID = "SEU_COGNITO_CLIENT_ID_AQUI"; 
-        // const COGNITO_DOMAIN = "vpaulo-dashboard-auth.auth.us-east-1.amazoncognito.com";
-        // const LOGOUT_REDIRECT_URL = "https://dash.vpaulo.com/index.html";
+        // const COGNITO_DOMAIN = "xxxxxxxxxxxxxxxxxx-auth.auth.us-east-1.amazoncognito.com";
+        // const LOGOUT_REDIRECT_URL = "https://domain.com/index.html";
 
         function logout() {
             // 1. Limpa o token do estado atual da página
             window.location.hash = "";
             
             // 2. Constrói a URL de Logout definitivo do Cognito
-            const logoutUrl = `https://vpaulo-dashboard-auth.auth.us-east-1.amazoncognito.com/logout?client_id=6linms5mcuo1ha6pl3pe4tgjp0&logout_uri=https://dash.vpaulo.com/index.html`;
+            const logoutUrl = `https://name.auth.us-east-1.amazoncognito.com/logout?client_id=xxxx&logout_uri=https://url_callback/index.html`;
             
             // 3. Redireciona o navegador para a AWS fazer o logoff
             window.location.href = logoutUrl;

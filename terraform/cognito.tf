@@ -37,9 +37,9 @@ resource "aws_cognito_user_pool_client" "client" {
   allowed_oauth_scopes                 = ["email", "openid", "profile"]
   supported_identity_providers         = ["COGNITO"]
 
-  # URLs de retorno (CloudFront)
-  callback_urls = ["https://dash.vpaulo.com/index.html"]
-  logout_urls   = ["https://dash.vpaulo.com/index.html"]
+  # URLs de retorno (CloudFront) # can user custon domain too
+  callback_urls = ["https://callback/index.html"]
+  logout_urls   = ["https://callback/index.html"]
 
   explicit_auth_flows = [
     "ALLOW_REFRESH_TOKEN_AUTH",
