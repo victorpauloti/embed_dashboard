@@ -40,14 +40,19 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-  viewer_certificate {
-    acm_certificate_arn = var.acm_certificate_arn
-    minimum_protocol_version = "TLSv1.2_2021"
-    ssl_support_method  = "sni-only"
+    viewer_certificate {
+    cloudfront_default_certificate = true
   }
 
+  # if custon domain is used, ACM certificate must be added
+  # viewer_certificate {
+  #   acm_certificate_arn = var.acm_certificate_arn
+  #   minimum_protocol_version = "TLSv1.2_2021"
+  #   ssl_support_method  = "sni-only"
+  # }
+
    # 1. Add your custom domain(s) to the 'aliases' list
-  aliases = ["dash.vpaulo.com"]
+  #aliases = ["custon-domain.com"] # Substitua pelo seu domínio personalizado
 
 }
 
